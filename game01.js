@@ -5,6 +5,8 @@
 //                                  2019/07/29
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+enchant.Sound.enabledInMobileSafari = true;
+
 enchant();
 window.onload = function() {
 
@@ -13,7 +15,7 @@ window.onload = function() {
   '/img/chara1.png', '/img/BG01-1.png', '/img/BG01-2.png', '/img/start.png',
   '/img/Card/Card-number.png', '/img/Card/Cardmain.png', 'img/Ground-001.png',
   '/img/Card/card-hand00.png', '/img/Card/card-hand02.png', '/img/Card/card-hand05.png',
-  '/img/Player/Chara-001-d.png'
+  '/img/Player/Chara-001-d.png', '/se/atack01.wav'
 
    );
 
@@ -69,6 +71,7 @@ game01.onload = function() {
   //-----------------------
   //CARD(P1とT1両方含む)
   //----------------------
+  ACS = Array; //addChildスイッチ
   battle = 0;
   encount = 0;
   encountrnd =0;
@@ -77,7 +80,10 @@ game01.onload = function() {
   cardrnd = Array();
   crdhandnow = Array();//選択カード取得用変数
 
-  game01.P1key = false;
+  game01.P1spacekey = false;
+  game01.enterkeyleft = false;
+  game01.enterkeyright = false;
+  nocrd = false;
 
   var i; var i2;
   var selectcrd = 0;//選択カード
@@ -95,7 +101,7 @@ game01.onload = function() {
 
   //ラベル
   var Label1 = new Label(P1life); var Label2 = new Label(T1Life);
-  var Label3 = new Label("");
+  var Label3 = new Label("何もありません!!");
   //ラベルフォントサイズ
   Label1.font = "10px cursive"; Label2.font = "10px cursive";
   Label3.font = "10px cursive";
@@ -226,7 +232,7 @@ game01.onload = function() {
 
    //デバック
     //console.log(cardrnd);
-  console.log(P1life, T1Life, P1dmg, T1dmg);
+  //console.log(P1life, T1Life, P1dmg, T1dmg);
    }
 
     setInterval(timeract, 1000);  //タイマー関数呼び出し
@@ -491,48 +497,103 @@ game01.onload = function() {
          crdhx += 50;
         }
 
-        //------------カード選択-----------
-        //selectcrd 選択カード順番
-        //y = 120 無選択   y = 150 選択
-        //-------------------------------
+      //------------カード選択-----------
+      //selectcrd 選択カード順番
+      //y = 120 選択   y = 150 無選択
+      //-------------------------------
+        //---------------------------
+        //座標
+        //---------------------------
         for (i2=0; i2<6; i2++){
-         if (selectcrd == i2){
-           for (i=0; i <6; i++){crdmain[i].y = 150;}
-              crdmain[i2].y = 120;
+         if (selectcrd == i2 ){
+           for (i=0; i <6; i++){crdmain[i].y = 150;}//選択無しカード座標
+              crdmain[i2].y = 120;//選択済みカード座標
            }
          }
 
-         if (game01.input.left){selectcrd -= 1} //左キー入力
-         if (game01.input.right){selectcrd += 1}//右キー入力
+            //---------------------------
+            //キー操作
+            //---------------------------
+             //左キー入力
 
-         if (selectcrd < 0){selectcrd = 0;}
-         if (selectcrd > 5){selectcrd = 5;}
+            if (game01.enterkeyleft == false && game01.input.left){
+              game01.enterkeyleft = true;
+              selectcrd -= 1
 
-         //---------------------------
-         //カード決定
-         //---------------------------
+              for (i =1; i<6; i++){
+              if (entercrd[selectcrd] == true && entercrd[selectcrd-i] == false)
+              {selectcrd -= i;}
+             }
+
+
+              //for (i=0; i<6; i++){
+              //if (entercrd[selectcrd] = true ){
+                console.log(entercrd[1],selectcrd)
+            //  }}
+
+
+
+              }
+
+            }
+
+            //右キー入力
+            if (game01.enterkeyright == false && game01.input.right){
+              game01.enterkeyright = true;
+              if (entercrd[selectcrd] == false){selectcrd += 1;}
+
+              for (i =1; i<6; i++){
+              if (entercrd[selectcrd] == true && entercrd[selectcrd+i] == false)
+              {selectcrd += i;}
+             }
+
+            }
+            if (selectcrd > 5){selectcrd = 5}
+            if (selectcrd < 0){selectcrd = 0}
+
+            //左,右連打禁止キーオフ
+            if (!game01.input.left)
+            {game01.enterkeyleft = false;}
+
+            if (!game01.input.right)
+            {game01.enterkeyright = false;}
+
+
+
+    //-----------------()--------------------------
+    //
+    //カード決定
+    //
+    //-------------------------------------------
          //スペースキーが押されていない時にキーロックをオフにする
-         if (!game01.input.space){game01.P1key = false;}
+         if (!game01.input.space){game01.P1spacekey = false;}
 
          //0~6枚のカードをいずれか選んだとき
          for (i =0; i < 6; i++){
 
-           //--------------------------
-           //スペースキーを押す
-           //--------------------------
-           if (game01.P1key == false && selectcrd == i && game01.input.space){
+          //-----------------------------------
+          //スペースキーを押す
+          //-----------------------------------
+           if (game01.P1spacekey == false&& selectcrd == i && entercrd[i] == false &&
+              game01.input.space){
 
-           //-------------------------------
-           //決定カードをentercrdに取得
-           //-------------------------------
+
+
+          //-------------------------------
+          //決定カード変数をオンにする
+          //-------------------------------
            entercrd[selectcrd] = true
-
 
            //-------------------------------
            //スペースキーのキーロックをオンにする
            //-------------------------------
-           game01.P1key = true;
+           game01.P1spacekey = true;
 
+           game01.assets["/se/atack01.wav"].play()
+           //game01.atack01 = Sound.load('/SE/atack01.wav');
+           //var se = Sound.load("atack01.wav");
+           //var sound = game01.assets['atack01.wav'].clone();
+           //se.play();
            //-------------------------------
            //選択したカードを削除
            //-------------------------------
@@ -669,11 +730,23 @@ game01.onload = function() {
                game01.rootScene.addChild(Label3);
              }
 
+    //----------------------------------
+    //選択カードを一つ戻す
+    //----------------------------------
+    selectcrd -= 1;
 
-           }
+
+
+
+    }
+
+
+
+
+
 
          }//いずれかのカードを選んだ時
-       }
+
 
 
 
@@ -714,10 +787,12 @@ game01.onload = function() {
 
       //Debug
       //crdhndnum = Math.floor(Math.random()*6);;
-      console.log(game01.P1key);
 
 
-      });
+
+
+
+    });
 
 
 
