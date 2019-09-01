@@ -14,7 +14,6 @@ window.onload = function() {
   game01.preload(
   '/img/chara1.png', '/img/BG01-1.png', '/img/BG01-2.png', '/img/start.png',
   '/img/Card/Card-number.png', '/img/Card/Cardmain.png', 'img/Ground-001.png',
-  '/img/Card/card-hand00.png', '/img/Card/card-hand02.png', '/img/Card/card-hand05.png',
   '/img/Player/Chara-001-d.png', '/se/atack01.wav'
 
    );
@@ -487,12 +486,13 @@ game01.onload = function() {
       //--------------------------
       //カード配置
       //--------------------------
-        crdhx = 20;
+        crdhx = 10;
         for (i=0; i<6; i++){
          cardrnd[i] = i;
          //
          crdhandnow[i] = cardrnd[i];
-         crdhand[cardrnd[i]].x = crdhx; crdhand[cardrnd[i]].y = 150;
+         crdhand[cardrnd[i]].x = crdhx; //カード手X座標
+         crdhand[cardrnd[i]].y = 150; //カード手Y座標
 
          crdhx += 50;
         }
@@ -506,8 +506,13 @@ game01.onload = function() {
         //---------------------------
         for (i2=0; i2<6; i2++){
          if (selectcrd == i2 ){
-           for (i=0; i <6; i++){crdmain[i].y = 150;}//選択無しカード座標
-              crdmain[i2].y = 120;//選択済みカード座標
+           for (i=0; i <6; i++){
+             crdmain[i].y = 150;  //選択無しカード札座標
+             crdhand[i].y = 152;  //選択無しカード手座標
+           }
+
+              crdmain[i2].y = 120;  //選択済みカード札座標
+              crdhand[i2].y = 122;  //選択無しカード手座標
            }
          }
 
@@ -613,7 +618,7 @@ game01.onload = function() {
            //-------------------------------
            //カード手座標設定
            //-------------------------------
-           crdhandT1[cardrndT1].x = crdmainT1.x + 10; crdhandT1[cardrndT1].y = crdmainT1.y + 10;
+           crdhandT1[cardrndT1].x = crdmainT1.x; crdhandT1[cardrndT1].y = crdmainT1.y + 2;
 
            //crdmainT1.scale(0.5,0.5);
            //-------------------------
@@ -624,7 +629,7 @@ game01.onload = function() {
            //-------------------------
            //P1手前カード手座標
            //-------------------------
-           crdhand[6].x = crdmain[6].x + 10;  crdhand[6].y = crdmain[6].y + 10;
+           crdhand[6].x = crdmain[6].x;  crdhand[6].y = crdmain[6].y + 2;
            crdhand[6].frame = crdhandnow[i];
 
            //-------------------------
@@ -829,14 +834,14 @@ game01.onload = function() {
       //===================================
       var CARDHAND = Class.create(Sprite,{
         initialize:function(x,y){
-        Sprite.call(this,32,50);
+        Sprite.call(this,50,70);
         //初期座標
         this.y = crdmain[0].y + 20;  this.frame = 0;
 
         //if (crdhndnum == 0){
         this.image = game01.assets['/img/Card/Card-number.png'];
       //}else if (crdhndnum == 2) {
-        //this.image = game01.assets['/img/Card/Card-hand02.png'];
+        //
       //}
 
      //}
