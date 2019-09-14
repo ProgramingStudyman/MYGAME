@@ -22,63 +22,62 @@ window.onload = function() {
 game01.onload = function() {
 
 //==========初期化==============
-//
-//=============================
-  //------------------------
-  //スペースキーの取得
-  //------------------------
+  //------スペースキーの取得---------
   game01.keybind( 32, 'space' );
 
-  //------------------------
-  //jキーの取得
-  //------------------------
+  //--------jキーの取得------------
   game01.keybind(74, 'j' );
 
-  //------------------------
-  //タイマー定義
-  //------------------------
+  //--------タイマー定義------------
   timer = 0;  timer2 = 0;
 
-  //------------------------
+  //=======================
   //P1変数定義 ~
-  //------------------------
-  //P1ライフ
+  //=======================
+  //---------P1ライフ------------
   var P1life = 100;
   var P1dmg = 1;
-  //アクションスイッチ
+  //-------アクションスイッチ---------
   AT = false;
 
-  //ジャンプ変数定義
+  //--------ジャンプ変数定義---------
   JP = false;
   jpy = 0;  jpy2 = 0;
 
-  //アイーンアクション定義
+  //-------アイーンアクション定義---------
   ainT = 0;//アイーンタイム
 
-  //------------------------
+
+  //=======================
   //敵 変数定義
-  //------------------------
-  //敵ライフ
+  //=======================
+  //------------敵ライフ-----------
   var T1Life = 10;
   var T1dmg = 1;
-  //敵AI乱数
+  //-----------敵AI乱数------------
   var AIR　= 1 + Math.floor(Math.random()*2);
 
-  //TekiMaxNumber(Teki現在数)
+  //--------TekiMaxNumber(Teki現在数)-----------
   TMN = 1;
 
-  //-----------------------
+  //=======================
   //CARD(P1とT1両方含む)
-  //----------------------
+  //=======================
   ACS = Array; //addChildスイッチ
   battle = 0;
   encount = 0;
   encountrnd =0;
   crdhx = 0;
-  crdhndnum = Math.floor(Math.random()*6);;
-  cardrnd = Array();
+  crdhndnum = Math.floor(Math.random()*6);
+
+  for (i = 0; i<6; i++){
+  cardrnd[i] = Math.floor(Math.random()*3); //cardhand 乱数取得
+  }
+
   crdhandnow = Array();//選択カード取得用変数
-  CARDSETon = false;
+  cardrnd = Array(); //card手乱数取得変数
+
+  CARDSETon = false;  //CARDSETファンクションのスイッチ
 
   game01.P1spacekey = false;
   game01.enterkeyleft = false;
@@ -173,12 +172,19 @@ game01.onload = function() {
         //--------------------------
         //カード配置リセット
         //--------------------------
+          //-------------------------------
+          //自カード手に乱数代入
+          //-------------------------------
+            for (i = 0; i<6; i++){
+            cardrnd[i] = Math.floor(Math.random()*4); //cardhand 乱数取得
+            }
               //--------------------------
               //カードを6枚全て広げた状態にする
               //--------------------------
                 i2 = 10;
                for (i = 0; i<6; i++){
                crdmain[i].x = i2;
+
                 i2 += 50; //手札座標の間隔
                 }
               //--------------------------
@@ -186,10 +192,15 @@ game01.onload = function() {
               //--------------------------
                 crdhx = 10;
                 for (i=0; i<6; i++){
-                 cardrnd[i] = i;
+
+                 //cardrnd[i] = Math.floor(Math.random()*3);
                  crdhandnow[i] = cardrnd[i];
-                 crdhand[cardrnd[i]].x = crdhx; //カード手X座標
-                 crdhand[cardrnd[i]].y = 150; //カード手Y座標
+
+                 crdhand[i].x = crdhx; //カード手X座標
+                 crdhand[i].y = 150; //カード手Y座標
+                 crdhand[i].frame = cardrnd[i];
+                 //crdhand[cardrnd[i]].x = crdhx; //カード手X座標
+                 //crdhand[cardrnd[i]].y = 150; //カード手Y座標
                  crdhx += 50;
 
                 }
@@ -263,7 +274,7 @@ game01.onload = function() {
    //game01.rootScene.addChild(Label4);
 
    //デバック
-    //console.log(cardrnd);
+    console.log(cardrnd);
   //console.log(P1life, T1Life, P1dmg, T1dmg);
    }
 
@@ -322,7 +333,7 @@ game01.onload = function() {
       //左キー押す
       //------------------
       if(AT == false && battle == 0 && game01.input.left){
-        P1.x -= 5;
+        P1.x -= 3;
         P1.scaleX = -1;
         P1.frame += 1;
       }
@@ -331,11 +342,29 @@ game01.onload = function() {
       //右キー押す
       //------------------
       if(AT == false && battle == 0 && game01.input.right){
-        P1.x += 5;
+        P1.x += 3;
         P1.scaleX = 1;
         P1.frame += 1;
 
 
+      }
+
+      //------------------
+      //上キー押す
+      //------------------
+      if(AT == false && battle == 0 && game01.input.up){
+        P1.y -= 3;
+        //P1.scaleX = 1;
+        P1.frame += 1;
+      }
+
+      //------------------
+      //右キー押す
+      //------------------
+      if(AT == false && battle == 0 && game01.input.down){
+        P1.y += 3;
+        //P1.scaleX = 1;
+        P1.frame += 1;
       }
       //--------------------
       //フレームループ
@@ -350,7 +379,7 @@ game01.onload = function() {
       //左キーと右キーが押されていない時
       //フレームを立ち状態にする
       //--------------------
-      if ( !game01.input.left && !game01.input.right ){
+      if ( !game01.input.left && !game01.input.right && !game01.input.up && !game01.input.down ){
         P1.frame = 0;
       }
 
@@ -474,21 +503,30 @@ game01.onload = function() {
   //=========================================
       //P1:敵1
       P1.addEventListener('enterframe',function(){
-        if(P1.intersect(T1))
-        {battle = 1;
-
+        if(P1.intersect(T1)){
+          battle = 1;
         }
 
       //  PlifeLabel.life = game01.PLife;
       //エンカウントにより表示、非表示
       if (battle != 0){
 
+        if (CARDSETon == false){
+          CARDSET();
+          CARDSETon = true;
+        }
       //-----------------------
       //カードを表示する
       //使用されたカードは削除する
       //-----------------------
       for (i=0; i<6; i++){
         if (entercrd[i] == false){
+
+          if (CARDSETon == false){
+
+            CARDSET();
+            CARDSETon = true;
+          }
 
           scene.addChild(crdmain[i]);//カード札
           scene.addChild(crdhand[i]);//カード手
@@ -532,9 +570,13 @@ game01.onload = function() {
       P1.frame = 0;　T1.frame = 0;
 
 
-      //if(CARDSETon == false){
-      //  CARDSETon = true;
+      if (CARDSETon == false){
+        for (i=0; i<6; i++){
+         cardrnd[i] = Math.floor(Math.random()*3);
+        }
         CARDSET();
+        CARDSETon = true;
+      }
 
 
       //-------------------------
@@ -666,7 +708,7 @@ game01.onload = function() {
            //-------------------------------
            //敵カード手に乱数代入
            //-------------------------------
-           cardrndT1 = Math.floor(Math.random()*5); //Teki cardhand 乱数取得
+           cardrndT1 = Math.floor(Math.random()*3); //Teki cardhand 乱数取得
 
            //-------------------------------
            //敵カード札座標設定
@@ -766,17 +808,31 @@ game01.onload = function() {
 
     }
 
+    //----------------------------------
+    //カードが全て無くなった時
+    //----------------------------------
     if (entercrd[0] == true && entercrd[1] == true && entercrd[2] == true &&
         entercrd[3] == true && entercrd[4] == true && entercrd[5] == true){
 
           //--------------------------
           //カード配置リセット
           //--------------------------
-               CARDSET();
+
+          CARDSETon = false;
+
+          if(CARDSETon == false){
+            CARDSET();
+            CARDSETon = true;
+          }
+
 
                for (i = 0; i<6; i++){
+
+               //crdhand[i].frame = cardrnd[i];
+
                scene.addChild(crdmain[i]);//カード札
-               scene.addChild(crdhand[i]);//カード手
+               //scene.addChild(crdhand[i]);//カード手
+               scene.addChild(crdhand[cardrnd[i]]);//カード手
 
                entercrd[i] = false;//決定されたカードをoffにする
              }
@@ -818,6 +874,18 @@ game01.onload = function() {
        }
 
        //-----------------------
+       //CARDSETonをoffにする
+       //-----------------------
+       CARDSETon = false;
+
+       //-----------------------
+       //決定されたカードをoffにする
+       //-----------------------
+       for (i = 0; i<6; i++){
+       entercrd[i] = false;
+       }
+
+       //-----------------------
        //エンカウント = 0
        //-----------------------
          encount = 0;
@@ -828,12 +896,6 @@ game01.onload = function() {
       T1Life = 10;
 
       }
-
-
-      //Debug
-      //crdhndnum = Math.floor(Math.random()*6);;
-
-
 
     }
 
@@ -892,7 +954,7 @@ game01.onload = function() {
       crdhand = new Array();
       for (i=0; i<6; i++){
         crdhand[i] = new CARDHAND(32,56);
-        crdhand[i].frame = i
+        crdhand[i].frame = cardrnd[i];
       }
       crdhand[6] = new CARDHAND(32,56);
 
