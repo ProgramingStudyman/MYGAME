@@ -4,7 +4,6 @@
 //                          GYOZA
 //                                  2019/07/29
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 enchant.Sound.enabledInMobileSafari = true;
 
 enchant();
@@ -12,12 +11,10 @@ window.onload = function() {
 
   var game01 = new Game(320, 320);
   game01.preload(
-  '/img/chara1.png', '/img/BG01-1.png', '/img/BG01-2.png', '/img/start.png',
+  '/img/Enemy/Mob001.png', '/img/Enemy/Mob002.png','/img/Enemy/Mob003.png','/img/BG01-1.png', '/img/BG01-2.png', '/img/start.png',
   '/img/Card/Card-number.png', '/img/Card/Cardmain.png', 'img/Ground-001.png',
   '/img/Player/P1_001.png', '/se/atack01.wav'
-
    );
-
 
 game01.onload = function() {
 
@@ -30,6 +27,7 @@ game01.onload = function() {
 
   //--------タイマー定義------------
   timer = 0;  timer2 = 0;
+
 
   //=======================
   //P1変数定義 ~
@@ -46,7 +44,6 @@ game01.onload = function() {
 
   //-------アイーンアクション定義---------
   ainT = 0;//アイーンタイム
-
 
   //=======================
   //敵 変数定義
@@ -70,12 +67,13 @@ game01.onload = function() {
   crdhx = 0;
   crdhndnum = Math.floor(Math.random()*6);
 
+  cardrnd = Array(); //card手乱数取得変数
   for (i = 0; i<6; i++){
   cardrnd[i] = Math.floor(Math.random()*3); //cardhand 乱数取得
   }
 
   crdhandnow = Array();//選択カード取得用変数
-  cardrnd = Array(); //card手乱数取得変数
+
 
   CARDSETon = false;  //CARDSETファンクションのスイッチ
 
@@ -114,6 +112,10 @@ game01.onload = function() {
   //Label1表示
   game01.rootScene.addChild(Label1);
 
+  //========timerメソッド=================
+  //var P1AttackAnimTimer = setInterval(function(){
+  //  P1.x ++;  P1.y ++;
+  //}, 10);
 
 //==================タイトル=======================
 //
@@ -172,35 +174,28 @@ game01.onload = function() {
         //--------------------------
         //カード配置リセット
         //--------------------------
-          //-------------------------------
-          //自カード手に乱数代入
-          //-------------------------------
-            for (i = 0; i<6; i++){
-            cardrnd[i] = Math.floor(Math.random()*4); //cardhand 乱数取得
-            }
               //--------------------------
               //カードを6枚全て広げた状態にする
               //--------------------------
                 i2 = 10;
                for (i = 0; i<6; i++){
                crdmain[i].x = i2;
-
-                i2 += 50; //手札座標の間隔
-                }
+               i2 += 50; //手札座標の間隔
+               }
               //--------------------------
               //カード配置
               //--------------------------
                 crdhx = 10;
                 for (i=0; i<6; i++){
 
-                 //cardrnd[i] = Math.floor(Math.random()*3);
+                 cardrnd[i] = Math.floor(Math.random()*4); //自カード手に乱数代入
+
                  crdhandnow[i] = cardrnd[i];
 
                  crdhand[i].x = crdhx; //カード手X座標
                  crdhand[i].y = 150; //カード手Y座標
                  crdhand[i].frame = cardrnd[i];
-                 //crdhand[cardrnd[i]].x = crdhx; //カード手X座標
-                 //crdhand[cardrnd[i]].y = 150; //カード手Y座標
+
                  crdhx += 50;
 
                 }
@@ -228,7 +223,8 @@ game01.onload = function() {
    //敵表示・非表示
    if (encount == 1){
    scene.addChild(T1);
- }else{scene.removeChild(T1);}
+   }else{scene.removeChild(T1);}
+
    //敵非表示
    if (encount == 0){
    scene.removeChild(T1);
@@ -252,23 +248,23 @@ game01.onload = function() {
 
    var Label1 = new Label(P1life);
    var Label2 = new Label(T1Life);
-   var Label3 = new Label("");
+   //var Label3 = new Label("");
 
    Label1.font = "10px cursive";
    Label2.font = "10px cursive";
-   Label3.font = "10px cursive";
+   //Label3.font = "10px cursive";
 
    Label1.x = 100;  Label1.y = 10;
    Label2.x = 200;  Label2.y = 10;
-   Label3.x = 100;  Label3.y = 50;
+   //Label3.x = 100;  Label3.y = 50;
 
    Label1.color = "rgb(0,0,0)";
    Label2.color = "rgb(0,0,0)";
-   Label3.color = "rgb(0,0,0)";
+   //Label3.color = "rgb(0,0,0)";
 
    game01.rootScene.addChild(Label1);
    game01.rootScene.addChild(Label2);
-   game01.rootScene.removeChild(Label3);
+   //game01.rootScene.removeChild(Label3);
 
    //game01.rootScene.addChild(Label3);
    //game01.rootScene.addChild(Label4);
@@ -308,7 +304,7 @@ game01.onload = function() {
         bg2.x = 200;
         }
 
-            });
+     });
 
   //================P1=======================
   //
@@ -345,8 +341,6 @@ game01.onload = function() {
         P1.x += 3;
         P1.scaleX = 1;
         P1.frame += 1;
-
-
       }
 
       //------------------
@@ -354,7 +348,6 @@ game01.onload = function() {
       //------------------
       if(AT == false && battle == 0 && game01.input.up){
         P1.y -= 3;
-        //P1.scaleX = 1;
         P1.frame += 1;
       }
 
@@ -363,7 +356,6 @@ game01.onload = function() {
       //------------------
       if(AT == false && battle == 0 && game01.input.down){
         P1.y += 3;
-        //P1.scaleX = 1;
         P1.frame += 1;
       }
       //--------------------
@@ -372,7 +364,6 @@ game01.onload = function() {
       if (P1.frame > 3){
         P1.frame = 1;
       }
-
 
       //--------------------
       //何も推されてない時
@@ -383,15 +374,8 @@ game01.onload = function() {
         P1.frame = 0;
       }
 
-
       //スペースキー
-      if(AT == false && battle == 0 && game01.input.space )
-      //  {AT = true; P1.frame = 4; }
-       //if　(P1.frame == 4 ) {P1.frame = 1; AT = false;}
-       //アイーンアクションスイッチ
-       //var ainact = function()
-       //{if　(P1.frame == 4 ) {P1.frame = 1; AT = false; }}
-
+      if(AT == false && battle == 0 && game01.input.space ){}
 
       //Jキー
       if(AT == false && JP == false && game01.input.j )
@@ -402,11 +386,11 @@ game01.onload = function() {
             JP = false;
             jpy = 0;
             jpy2 = 0;
-            P1.y = 60}
+            P1.y = 60
+          }
 
         P1.y -= jpy + jpy2;
       });
-
 
       //クリック
       game01.rootScene.addEventListener('touchend', function(event)
@@ -415,34 +399,38 @@ game01.onload = function() {
       //===============Teki1=====================
       //  AIR
       //=========================================
-      var Teki1 = Class.create(Sprite,{
+        var Teki1 = Class.create(Sprite,{
         initialize:function(x,y){
           Sprite.call(this,32,32)
-          this.image = game01.assets['/img/chara1.png'];
-
+          //this.image = game01.assets['/img/Enemy/Mob001.png'];
+          if (TMN == 1){this.image = game01.assets['/img/Enemy/Mob001.png'];}
+          if (TMN == 2){this.image = game01.assets['/img/Enemy/Mob002.png'];}
+          if (TMN == 3){this.image = game01.assets['/img/Enemy/Mob003.png'];}
         }});
+
 
         //----------------------
         //敵1作成
         //----------------------
         var T1 = new Teki1(32,32);
+        if (TMN == 1) {var T1 = new Teki1(32,32);}
+        if (TMN == 2) {var T1 = new Teki1(24,32);}
+        if (TMN == 3) {var T1 = new Teki1(32,32);}
         T1.x = 200; T1.y =60; T1.frame = 0;
-
-        T1.animeWaitMax = 3;		// アニメーションのWait値
-        T1.animeWaitCount = 0;	// アニメーションのWait値のカウント
+        T1.animeWaitMax = 3;  T1.animeWaitCount = 0;
 
         //-------------無限ループ-----------------------
         T1.addEventListener('enterframe', function(){
 
-          if (AIR = 1 && this.x > P1.x){
-          this.x -= 2;  // P1に近づく
-          }
-          if (AIR = 1 && this.x < P1.x){
-          this.x += 2;  //P1に近づく
-          }
+          // P1に近づく
+          if (AIR = 1 && this.x > P1.x && battle == 0)
+          {this.x -= 2;}
+
+          //P1に近づく
+          if (AIR = 1 && this.x < P1.x && battle == 0)
+          {this.x += 2;}
 
       if (battle == 0){
-
           if (this.animeWaitCount >= this.animeWaitMax) {
             this.animeWaitCount = 0;
         //this.frame = this.age % 3;
@@ -451,26 +439,20 @@ game01.onload = function() {
 
           if (TMN == 1 && this.frame >= 0 && this.frame <= 1) {
             this.frame++;
-          }else if (TMN == 1 && this.frame >=1) {
-            this.frame = 0;
-          }
+          }else if (TMN == 1 && this.frame >=1)
+          {this.frame = 0;}
 
-          if (TMN == 2 && this.frame >= 5 && this.frame <= 6) {
+          if (TMN == 2 && this.frame >= 0 && this.frame <= 1) {
             this.frame++;
-          }else if (TMN == 2 && this.frame >=6) {
-            this.frame = 5;
-          }
+          }else if (TMN == 2 && this.frame >=1)
+          {this.frame = 0;}
 
-          if (TMN == 3 && this.frame >= 10 && this.frame <= 11) {
+          if (TMN == 3 && this.frame >= 0 && this.frame <= 2) {
             this.frame++;
-          }else if (TMN == 3 && this.frame >=11) {
-            this.frame = 10;
-          }
+          }else if (TMN == 3 && this.frame >=2)
+          {this.frame = 0;}
 
-        } else {
-                this.animeWaitCount++;
-                }
-
+        } else {this.animeWaitCount++;}
         }
 
         //------------------------
@@ -480,18 +462,20 @@ game01.onload = function() {
           TMN++;
           this.x = 232;
 
-          //if (TMN == 1){T1.frame =0;}
-          if (TMN == 2){T1.frame =5;}
-          if (TMN == 3){T1.frame =10;}
+          if (TMN == 1){T1.image = game01.assets['/img/Enemy/Mob001.png'];}
+          if (TMN == 2){T1.image = game01.assets['/img/Enemy/Mob002.png'];}
+          if (TMN == 3){T1.image = game01.assets['/img/Enemy/Mob003.png'];}
+
+          if (TMN == 3){}
           if (TMN > 3){
-            TMN = 3;
-            game01.replaceScene(GameoverScene());
+             TMN = 3;
+             game01.replaceScene(GameoverScene());
           }
         }
 
         //-------Teki向き--------------
-        if (this.x > P1.x){this.scaleX = -1;}
-        else {this.scaleX = 1;}
+        if (T1.x > P1.x){T1.scaleX = 1;}
+        else {T1.scaleX = -1;}
 
       });
 
@@ -503,15 +487,16 @@ game01.onload = function() {
   //=========================================
       //P1:敵1
       P1.addEventListener('enterframe',function(){
-        if(P1.intersect(T1)){
-          battle = 1;
-        }
+        if(P1.intersect(T1))
+        {battle = 1;}
 
       //  PlifeLabel.life = game01.PLife;
       //エンカウントにより表示、非表示
       if (battle != 0){
 
         if (CARDSETon == false){
+
+          P1.x = 40; P1.y =60;
           CARDSET();
           CARDSETon = true;
         }
@@ -530,6 +515,7 @@ game01.onload = function() {
 
           scene.addChild(crdmain[i]);//カード札
           scene.addChild(crdhand[i]);//カード手
+
         }else if (entercrd[i] == true) {
           scene.removeChild(crdmain[i]);
           scene.removeChild(crdhand[i]);
@@ -545,17 +531,17 @@ game01.onload = function() {
       scene.removeChild(crdhand[i]);//カード手
       }
     }
+
     //------------------バトル開始-座標-----------------------
     //---------------------------
     //バトル無しの状態
     //---------------------------
     if(battle == 0){
 
-
       //------------------------------
       //カードを一つにまとめた形にする
       //-------------------------------
-      var i2 = 10;
+      i2 = 10;
       for (i = 0; i <6; i++)
       crdmain[i].x = i2;
       i2 += 2
@@ -568,7 +554,6 @@ game01.onload = function() {
       //P1,T1の状態
       //-----------------
       P1.frame = 0;　T1.frame = 0;
-
 
       if (CARDSETon == false){
         for (i=0; i<6; i++){
@@ -583,19 +568,15 @@ game01.onload = function() {
       //使用されたカード削除
       //-------------------------
       for (i=0; i<6; i++){
-      scene.removeChild(crdmain[entercrd]);
-      scene.removeChild(crdhand[entercrd]);
+       scene.removeChild(crdmain[entercrd]);
+       scene.removeChild(crdhand[entercrd]);
       }
 
       //--------------------------
       //P1,T1座標を指定する
       //--------------------------
-      P1.x = 40; P1.y =60;
+      //P1.x = 40; P1.y =60;
       T1.x = 280; T1.y =60;
-
-
-
-
 
       //------------カード選択-----------
       //selectcrd 選択カード順番
@@ -630,17 +611,12 @@ game01.onload = function() {
               {selectcrd -= i;}
              }
 
-
               //for (i=0; i<6; i++){
               //if (entercrd[selectcrd] = true ){
                 console.log(entercrd[1],selectcrd)
             //  }}
 
-
-
               }
-
-
 
             //右キー入力
             if (game01.enterkeyright == false && game01.input.right){
@@ -663,8 +639,6 @@ game01.onload = function() {
             if (!game01.input.right)
             {game01.enterkeyright = false;}
 
-
-
     //-----------------()--------------------------
     //
     //カード決定
@@ -680,9 +654,7 @@ game01.onload = function() {
           //スペースキーを押す
           //-----------------------------------
            if (game01.P1spacekey == false&& selectcrd == i && entercrd[i] == false &&
-              game01.input.space){
-
-
+               game01.input.space){
 
           //-------------------------------
           //決定カード変数をオンにする
@@ -695,10 +667,7 @@ game01.onload = function() {
            game01.P1spacekey = true;
 
            game01.assets["/se/atack01.wav"].play()
-           //game01.atack01 = Sound.load('/SE/atack01.wav');
-           //var se = Sound.load("atack01.wav");
-           //var sound = game01.assets['atack01.wav'].clone();
-           //se.play();
+
            //-------------------------------
            //選択したカードを削除
            //-------------------------------
@@ -720,7 +689,6 @@ game01.onload = function() {
            //-------------------------------
            crdhandT1[cardrndT1].x = crdmainT1.x; crdhandT1[cardrndT1].y = crdmainT1.y + 2;
 
-           //crdmainT1.scale(0.5,0.5);
            //-------------------------
            //P1手前カード札座標
            //-------------------------
@@ -747,7 +715,18 @@ game01.onload = function() {
            //------------------------
            //勝敗判定
            //------------------------
+           //P1の数字が敵より大だった時
+           if (crdhandnow[i] > cardrndT1)
+           {
 
+
+             startAttack01();
+             //P1AttackAnim();
+             T1DMG();
+           }
+           //P1の数字が敵より小だった時
+           if (crdhandnow[i] < cardrndT1)
+           { P1DMG();}
 
              //-----------------------
              //P1チョキ : T1パー
@@ -801,6 +780,15 @@ game01.onload = function() {
                game01.rootScene.addChild(Label3);
              }
 
+             //------P1攻撃アニメ------------------
+             function startAttack01(){
+               var P1AttackAnimTimer = setInterval(function(){
+                 P1.x ++;
+                 if (P1.y < T1.y){P1.y ++;}
+                 if (P1.x > T1.x){clearInterval(P1AttackAnimTimer)}
+               }, 10);
+             }
+
     //----------------------------------
     //選択カードを一つ戻す
     //----------------------------------
@@ -825,13 +813,9 @@ game01.onload = function() {
             CARDSETon = true;
           }
 
-
                for (i = 0; i<6; i++){
 
-               //crdhand[i].frame = cardrnd[i];
-
                scene.addChild(crdmain[i]);//カード札
-               //scene.addChild(crdhand[i]);//カード手
                scene.addChild(crdhand[cardrnd[i]]);//カード手
 
                entercrd[i] = false;//決定されたカードをoffにする
@@ -839,17 +823,7 @@ game01.onload = function() {
 
           }
 
-
-
-
-
-
-
-
     }//0~6枚のカードのいずれかのカードを選んだ時
-
-
-
 
      //-----------------------------
      //バトル終了
@@ -901,9 +875,6 @@ game01.onload = function() {
 
 }); //P1.addEventListener('enterframe',function(
 
-
-
-
 //==================CARD==========================
 //card,hand [6] = 手前表示手札
 //
@@ -919,10 +890,7 @@ game01.onload = function() {
         //scene.addChild(this);
         }});
 
-
-
       var crdmain = Array();
-      var i;
       for (i = 0; i<7; i++){
       crdmain[i] = new CARD(50,75);
       }
@@ -937,17 +905,8 @@ game01.onload = function() {
       var CARDHAND = Class.create(Sprite,{
         initialize:function(x,y){
         Sprite.call(this,50,70);
-        //初期座標
-        this.y = crdmain[0].y + 20;  this.frame = 0;
-
-        //if (crdhndnum == 0){
+        this.y = crdmain[0].y + 20;  this.frame = 0;//初期座標
         this.image = game01.assets['/img/Card/Card-number.png'];
-      //}else if (crdhndnum == 2) {
-        //
-      //}
-
-     //}
-
         }});
 
       //P1cardhand作成
@@ -956,7 +915,7 @@ game01.onload = function() {
         crdhand[i] = new CARDHAND(32,56);
         crdhand[i].frame = cardrnd[i];
       }
-      crdhand[6] = new CARDHAND(32,56);
+      crdhand[6] = new CARDHAND(32,56); //手前のカード
 
       //敵cardhand作成
       crdhandT1 = new Array();
@@ -966,15 +925,13 @@ game01.onload = function() {
       scene.removeChild(crdhandT1[i]);
       }
 
-
-
       //----------------------PAD---------------------------
       //
       //----------------------------------------------------
-
       var pad = new Pad();
       pad.x = 0;
       pad.y = 225;
+
       game01.rootScene.addChild(pad);
           scene.addChild(pad);
 
@@ -1001,13 +958,8 @@ game01.onload = function() {
               btn2.y = 270
               scene.addChild(btn2);
 
-
-
-
             return scene;
           };
-
-
 
 //-----------------ゲームオーバー---------------------------------
 //
@@ -1017,14 +969,12 @@ game01.onload = function() {
           var GameoverScene = function(){
               var scene = new Scene();
               var Label5 = new Label('ゲームオーバーシーン　タッチでゲームシーンに戻る');
-              Label5.x = 0;
-              Label5.y = 20;
+              Label5.x = 0;   Label5.y = 20;
               scene.addChild(Label5);
               scene.backgroundColor = 'rgba(0,0,255,0,5)';
               scene.addEventListener(Event.TOUCH_START, function(e){
                 game01.popScene();
               });
-
 
               return scene;
           };
