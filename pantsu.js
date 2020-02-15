@@ -77,10 +77,19 @@ window.onload= function () {
                 subTitle.font = '14px sans-serif';
                 scene.addChild(subTitle);
 
-                 //pantsu.pushScene(this);//プッシュで上に出す
+
+
+
+              /*-----------------------
+              タッチイベント
+              -----------------------*/
 
             startImage.addEventListener(Event.TOUCH_START, function(e){
                pantsu.replaceScene(GameScene());
+
+
+
+
             });
 
 
@@ -89,12 +98,35 @@ window.onload= function () {
 
 
         /*----------------------メイン-----------------------------------
-
+        GameSceneß
         P1, Teki1, Score
 
         --------------------------------------------------------------*/
           var GameScene = function(){
             var scene = new Scene();
+
+            /*------------------
+            初期値設定
+            -------------------*/
+             Pan1sw = 0; //パンツの矛先スイッチ
+             Pan1s = 7;  //パンツの移動速度
+             Pan1dwt = 2; //パンツ投げディレイタイマー
+            Pan1T1irs[1] = 0;
+
+             pan1Timer = 0;//
+             pan1dtimer = 0;
+             T1sp = -58;//敵初期位置
+
+
+            //pantsu.life = 3;
+            lifeLabel.life = 3;
+            pantsu.life = pantsu.life;
+
+            pantsu.score = 0;
+            scoreLabel.score = pantsu.score;
+
+            scene.addChild(lifeLabel);//ライフをシーンに追加
+            scene.addChild(scoreLabel);//スコアをシーンに追加
 
 
             /*==============BG======================
@@ -164,11 +196,12 @@ window.onload= function () {
       context.fillRect(0, 0, 320, 34);
       context.closePath();	//パスを終了
       context.stroke();		//パスを描画する
-      scene.addChild(sky);
+
+      scene.addChild(sky);//空をシーンに追加
 
 
-      scene.addChild(lifeLabel);
-      scene.addChild(scoreLabel);
+      scene.addChild(lifeLabel);//ライフをシーンに追加
+      scene.addChild(scoreLabel);//スコアをシーンに追加
 
 
 
@@ -332,10 +365,14 @@ window.onload= function () {
         ダメージ食らう
         ----------------*/
         if (T1.x > 200){
-          lifeLabel.life = -- pantsu.life
+
+          lifeLabel.life -=  1
           T1.x = T1sp;
-            if (pantsu.life <= 0){
+            if (lifeLabel.life <= 0){
                 pantsu.replaceScene(GameoverScene());
+
+
+
             }
         }
 
