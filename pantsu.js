@@ -10,7 +10,7 @@ window.onload= function () {
   var pantsu = new Game(320,320);
   pantsu.preload(
     '/img/start.png','img/Nami.png','/img/P1_001.png','/img/Teki_001.png','/img/ikada.png',
-    '/img/投げパン.png','img/海.png','img/崖.png','img/sky.png'
+    '/img/投げパン.png','img/海.png','img/崖.png','img/sky.png','img/Rockshadow.png'
   );
   pantsu.onload = function(){
 
@@ -26,12 +26,15 @@ window.onload= function () {
        var Pan1dy;
        var Pan1sw = 0; //パンツの矛先スイッチ
        var Pan1s = 7;  //パンツの移動速度
-       var Pan1dwt = 2; //パンツ投げディレイタイマー
+       var Pan1dwt = 1; //パンツ投げディレイタイマー
        var Pan1T1irs = [];//Pan1とT1の当たり判定
        Pan1T1irs[1] = 0;
 
        var pan1Timer = 0;//
        var pan1dtimer = 0;
+
+       var my = -4;
+       var my2 = 0.2;
 
 
 
@@ -152,32 +155,40 @@ window.onload= function () {
          //崖1枚目
          var bg3 = new Sprite(320, 20);            // スプライトを作る
              bg3.image = pantsu.assets['img/崖.png']; // 画像を設定
-             bg3.x = 0;  bg3.y = 50;                                 // 横位置調整
+             bg3.x = 0;  bg3.y = 60;                                 // 横位置調整
 
              scene.addChild(bg3);// シーンに追加
 
        //崖2枚目
          var bg4 = new Sprite(320, 20);            // スプライトを作る
              bg4.image = pantsu.assets['img/崖.png']; // 画像を設定
-             bg4.x = -320; bg4.y = 50;
+             bg4.x = -320; bg4.y = 60;
              scene.addChild(bg4);// シーンに追加
 
       //空
        var bg5 = new Sprite(320, 16);            // スプライトを作る
            bg5.image = pantsu.assets['img/sky.png']; // 画像を設定
-           bg5.x = 0; bg5.y = 34;
+           bg5.x = 0; bg5.y = 44;
            scene.addChild(bg5);// シーンに追加
 
       //影
-       var bg6 = new Sprite(320,20);           //地面スプライト
-         //bg6.image = pantsu.assets['img/Nami.png']; // 画像を設定
-       bg6.x = 0; bg6.y = 70;
+       var bg6 = new Sprite(320,16);           //地面スプライト
+         bg6.image = pantsu.assets['img/Rockshadow.png']; // 画像を設定
+         //bg6.opacity = 0.7;
+       bg6.x = 0; bg6.y = 80;
 
         scene.addChild(bg6);
+      //影2枚目
+        var bg7 = new Sprite(320,16);           //地面スプライト
+          bg7.image = pantsu.assets['img/Rockshadow.png']; // 画像を設定
+          //bg7.opacity = 0.7;
+        bg7.x = -320; bg7.y = 80;
+
+         scene.addChild(bg7);
 
 
-        sky = new Sprite(320,50);//Spriteを作ります
-        surface = new Surface(320,50);//Surfaceを作ります
+        sky = new Sprite(320,44);//Spriteを作ります
+        surface = new Surface(320,44);//Surfaceを作ります
         sky.image = surface;//spriteのimageにsurfaceを代入します
         context = surface.context;//コンテキストを取得します
         //以下、HTML5のcanvasと同じように使えます
@@ -193,7 +204,7 @@ window.onload= function () {
       console.log(i2);
       }
       */
-      context.fillRect(0, 0, 320, 34);
+      context.fillRect(0, 0, 320, 44);
       context.closePath();	//パスを終了
       context.stroke();		//パスを描画する
 
@@ -211,11 +222,15 @@ window.onload= function () {
       bg2.x += 2;
       bg3.x += 2;
       bg4.x += 2;
+      bg6.x += 2;
+      bg7.x += 2;
 
       if (bg1.x >= 320){bg1.x = -320;}
       if (bg2.x >= 320){bg2.x = -320;}
       if (bg3.x >= 320){bg3.x = -320;}
       if (bg4.x >= 320){bg4.x = -320;}
+      if (bg6.x >= 320){bg6.x = -320;}
+      if (bg7.x >= 320){bg7.x = -320;}
 
 
       });
@@ -293,8 +308,18 @@ window.onload= function () {
         P1.scene.addEventListener('touchstart', function(event){
         if (Pan1sw == 0){
           Pan1dx = event.x; Pan1dy = event.y;
-          if (Pan1.y < Pan1dy){Pan1sw = 1};
-          if (Pan1.y > Pan1dy){Pan1sw = 2};
+
+
+          Pan1sw = 1;
+          /*
+          if (Pan1.y < Pan1dy){
+            Pan1sw = 1
+          };
+          if (Pan1.y > Pan1dy){
+            Pan1sw = 2
+          };
+          */
+
         }
 
         });
@@ -306,8 +331,18 @@ window.onload= function () {
 
         =============================*/
         //Pan1swが 1 or 2 だった時
-        if (Pan1sw == 1 || Pan1sw == 2){Pandst();}
-        if (Pan1T1irs[1] == 0){TekiDo();}
+        if (Pan1sw == 1){
+          Pandst();
+        }
+        /*
+        if (Pan1sw == 1 || Pan1sw == 2){
+          Pandst();
+        }
+        */
+
+        if (Pan1T1irs[1] == 0){
+          TekiDo();
+        }
 
         //  console.log(Pan1T1irs[1],Pan1sw);
 
@@ -387,16 +422,23 @@ window.onload= function () {
         当たり判定
         ===============================*/
         function Pandst(){
+          //行先Xより右にパンツがあったら
+        if (Pan1dx < Pan1.x){
+          Pan1.x -= Pan1s;
+        }
+        //if (my>0 && Pan1.y < Pan1dy){
+          //Pan1.y -= Pan1s;
+          console.log(Pan1.y,Pan1dy,Pan1sw,my)
+          Pan1.y += (my+my2);
+          my2 += 0.2
+        //}
 
-        if (Pan1dx < Pan1.x){Pan1.x -= Pan1s;}
+        if (Pan1.x < Pan1dx && Pan1.y > Pan1dy && my2>0 ){
+            Pan1sw = 3;//到着パンツ
+            //Pan1dwt = 1;
+           pan1dtimer = 0;
+           Pan1.opacity = 0;//透明度を100%にする
 
-          if (Pan1sw == 1){
-          if (Pan1.y < Pan1dy){Pan1.y += Pan1s;}
-          if (Pan1.x < Pan1dx && Pan1.y > Pan1dy){
-              Pan1sw = 3;//到着パンツ
-              //Pan1dwt = 1;
-             pan1dtimer = 0;
-             Pan1.opacity = 0;//透明度を100%にする
 
         if(Pan1.within(T1, 30)) {
         T1.frame = 2;
@@ -408,17 +450,22 @@ window.onload= function () {
         startpantsuTimer()//パンツ非表示メソッドへ
 
         }
-        }
-        if (Pan1sw == 2) {
-        if (Pan1.y > Pan1dy){Pan1.y -= Pan1s;}
-        if (Pan1.x < Pan1dx && Pan1.y < Pan1dy){
-        Pan1sw = 3;//到着パンツ
-        //Pan1dwt = 1;
-        pan1dtimer = 0;
-        Pan1.opacity = 0;//透明度を100%にする
+/*
+          if (Pan1sw == 1){
+
+
+
+          if (Pan1.x < Pan1dx && Pan1.y > Pan1dy && my>0){
+              Pan1sw = 3;//到着パンツ
+              //Pan1dwt = 1;
+             pan1dtimer = 0;
+             Pan1.opacity = 0;//透明度を100%にする
+
+
+
         if(Pan1.within(T1, 30)) {
         T1.frame = 2;
-        Pan1T1irs[1] = 1;
+        Pan1T1irs[1] = 1;//当たり判定on
         pantsu.score = scoreLabel.score += 100;
 
         }
@@ -426,7 +473,41 @@ window.onload= function () {
         startpantsuTimer()//パンツ非表示メソッドへ
 
         }
+
+
         }
+
+
+        if (Pan1sw == 2) {
+
+
+
+
+          /*
+        if (Pan1.x < Pan1dx && Pan1.y < Pan1dy && my>0){
+          Pan1.y =0;
+        Pan1sw = 3;//到着パンツ
+        //Pan1dwt = 1;
+        pan1dtimer = 0;
+        Pan1.opacity = 0;//透明度を100%にする
+
+
+        if(Pan1.within(T1, 30)) {
+        T1.frame = 2;
+        Pan1T1irs[1] = 1;
+        pantsu.score = scoreLabel.score += 100;
+
+        }
+
+
+
+        startpantsuTimer()//パンツ非表示メソッドへ
+
+        }
+
+
+        }
+        */
         }
         /*==============================
 
@@ -446,6 +527,8 @@ window.onload= function () {
         pan1dtimer = 0;
         Pan1.x = 270;  Pan1.y = 120;//初期位置へ移動
         Pan1.opacity = 1;//透明度0%
+        my = -4;
+        my2 = 0.2;
 
         if (Pan1T1irs[1] == 1){
         Pan1T1irs[1] = 0;//当たり判定を初期値にする
